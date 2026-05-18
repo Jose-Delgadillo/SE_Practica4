@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Misterio en el Servidor: ¿Quién mató al Pollo?</title>
+    <style>
+        body { 
+            font-family: 'Courier New', Courier, monospace; /* Fuente estilo consola/juego */
+            background-color: #2c2c2c; 
+            color: #ffffff; 
+            text-align: center; 
+            margin: 0; 
+            padding: 20px;
+        }
+        #game-container { 
+            background: #404040; 
+            padding: 30px; 
+            border-radius: 10px; 
+            border: 4px solid #5c5c5c;
+            max-width: 800px; 
+            margin: 0 auto; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+        h1 { color: #55ff55; text-shadow: 2px 2px #000; }
+        h2 { color: #aaaaaa; border-bottom: 2px solid #5c5c5c; padding-bottom: 5px; }
+        
+        /* Cuadrículas para la Libreta de Detective */
+        .grid-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: #2b2b2b;
+            border: 2px solid #1a1a1a;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .card:hover { border-color: #55ff55; }
+        .card img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            background: #555; /* Fondo por si la imagen es transparente */
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        
+        /* Clase para tachar elementos descartados */
+        .tachado {
+            opacity: 0.3;
+            filter: grayscale(100%);
+            text-decoration: line-through;
+            border-color: #ff5555 !important;
+        }
+
+        /* Área de Acusación */
+        #acusacion-area {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px dashed #ffaa00;
+        }
+        select {
+            padding: 10px;
+            margin: 5px;
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+            font-family: inherit;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            background: #55ff55;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        button:hover { background: #33cc33; }
+        
+        #resultado {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #ffff55;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <h1>MISTERIO EN EL SERVIDOR</h1>
+        <p>Alguien eliminó al pollo mascota del server. ¡Haz clic en las cartas para tachar a los inocentes y arma tu acusación final!</p>
+
+        <h2>Sospechosos</h2>
+        <div class="grid-container" id="grid-personajes"></div>
+
+        <h2>Armas</h2>
+        <div class="grid-container" id="grid-armas"></div>
+
+        <h2>Locaciones</h2>
+        <div class="grid-container" id="grid-locaciones"></div>
+
+        <div id="acusacion-area">
+            <h2 style="color: #ffaa00; border: none;">HACER ACUSACIÓN OFICIAL</h2>
+            <select id="sel-personaje"></select>
+            <select id="sel-arma"></select>
+            <select id="sel-locacion"></select>
+            <br>
+            <button onclick="verificarAcusacion()">¡ACUSAR!</button>
+            <div id="resultado"></div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Definir los datos
+        const personajes = ["Steve", "Herobrine", "Alex", "Zombie", "Esqueleto"];
+        const armas = ["Pico", "Espada", "Hacha", "Arco", "Pala"];
+        const locaciones = ["Mina", "Nether", "Templo", "Aldea", "Portal"];
+
+        // 2. Generar el Secreto (Random) al iniciar la partida
+        let secreto = {
+            personaje: personajes[Math.floor(Math.random() * personajes.length)],
+            arma: armas[Math.floor(Math.random() * armas.length)],
+            locacion: locaciones[Math.floor(Math.random() * locaciones.length)]
+        };
+
+        // Imprimir en consola para que el profe (o tú) puedan hacer trampa y probar que funciona
+        console.log("SECRETO GENERADO:", secreto);
+
+        // 3. Las 5 Historias Dinámicas (Se elige según el Asesino)
+        const historias = {
+            "Steve": "Quería construir una granja de experiencia automática y el pollo se cruzó en el mecanismo. Usó su [ARMA] en la zona de [LOCACION] porque el pollo no dejaba de pisar la placa de presión. Fue un 'accidente' técnico.",
+            "Herobrine": "Fue un acto de pura maldad para asustar al servidor. Apareció entre la niebla en [LOCACION] y eliminó al pobre pollo de un solo golpe crítico con su [ARMA], dejando solo una pluma flotando antes de desvanecerse.",
+            "Alex": "Estaba recolectando materiales para su nueva base y el pollo no dejaba de hacer ruido pidiendo semillas. En un ataque de frustración mientras trabajaba en [LOCACION], le arrojó su [ARMA] sin medir su fuerza.",
+            "Zombie": "Su IA no tiene mucha inteligencia. Vio al pollo corriendo por [LOCACION], se confundió al escuchar sus pasos, y en su torpeza lo aplastó usando su [ARMA] mientras en realidad intentaba perseguir a un aldeano.",
+            "Esqueleto": "Estaba practicando su puntería nocturna en [LOCACION]. Desafortunadamente, el pollo dio un salto repentino justo en la trayectoria letal de su [ARMA]. ¡Un headshot totalmente no intencional!"
+        };
+
+        // Función para renderizar la libreta visual
+        function crearGrid(array, idContenedor, idSelect) {
+            const contenedor = document.getElementById(idContenedor);
+            const select = document.getElementById(idSelect);
+            
+            array.forEach(item => {
+                // Crear carta clickeable
+                const div = document.createElement('div');
+                div.className = 'card';
+                // Genera el nombre de imagen en minúsculas (ej. steve.png)
+                let imgName = item.toLowerCase() + ".png"; 
+                div.innerHTML = `<img src="img/${imgName}" alt="${item}" onerror="this.src='https://via.placeholder.com/80/555555/FFFFFF?text=?'"><br><b>${item}</b>`;
+                
+                // Función para tachar/destachar al hacer clic
+                div.onclick = function() { this.classList.toggle('tachado'); };
+                contenedor.appendChild(div);
+
+                // Llenar el menú desplegable de acusación
+                const option = document.createElement('option');
+                option.value = item;
+                option.text = item;
+                select.appendChild(option);
+            });
+        }
+
+        // Inicializar la interfaz
+        crearGrid(personajes, 'grid-personajes', 'sel-personaje');
+        crearGrid(armas, 'grid-armas', 'sel-arma');
+        crearGrid(locaciones, 'grid-locaciones', 'sel-locacion');
+
+        // 4. Lógica de Verificación (El Enlace)
+        function verificarAcusacion() {
+            let pElegido = document.getElementById('sel-personaje').value;
+            let aElegido = document.getElementById('sel-arma').value;
+            let lElegida = document.getElementById('sel-locacion').value;
+            let divRes = document.getElementById('resultado');
+
+            if (pElegido === secreto.personaje && aElegido === secreto.arma && lElegida === secreto.locacion) {
+                // Generar historia final reemplazando las palabras clave
+                let historiaFinal = historias[pElegido]
+                                    .replace("[ARMA]", aElegido)
+                                    .replace("[LOCACION]", lElegida);
+                
+                divRes.style.color = "#55ff55";
+                divRes.innerHTML = `<h3>¡MISTERIO RESUELTO!</h3>
+                                    <p>Asesino: <b>${pElegido}</b> | Arma: <b>${aElegido}</b> | Lugar: <b>${lElegida}</b></p>
+                                    <p><i>"${historiaFinal}"</i></p>
+                                    <button onclick="location.reload()" style="background:#fff;">Jugar de Nuevo</button>`;
+            } else {
+                divRes.style.color = "#ff5555";
+                divRes.innerHTML = `Esa no es la verdad... El pollo clama justicia. ¡Revisa tus pistas y vuelve a intentar!`;
+            }
+        }
+    </script>
+</body>
+</html>

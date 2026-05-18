@@ -1,0 +1,7 @@
+"Para optimizar la narrativa y evitar la redacción de 125 combinaciones manuales, el simulador utiliza un modelo de Narrativa Modular.
+Al iniciar la partida, el motor de JavaScript utiliza la función Math.random() para seleccionar y almacenar en caché tres variables independientes 
+(1 Asesino, 1 Arma, 1 Locación).
+La estructura del árbol lógico se simplifica anclando el motivo exclusivamente al personaje (generando solo 5 historias base). 
+Si la acusación del jugador coincide con la clave generada por el Random, el sistema llama al objeto de historias, extrae la historia del personaje ganador, 
+e inyecta dinámicamente las variables de Arma y Locación mediante el método .replace() de JavaScript.
+ Esto nos da la ilusión de 125 finales únicos con un esfuerzo de programación lineal."
