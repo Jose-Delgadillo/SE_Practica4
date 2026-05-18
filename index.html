@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Clue Minecraft: ¿Quién eliminó al Pollo?</title>
+    <title>Misterio Minecraft: ¿Quién eliminó al Pollo?</title>
     <style>
         body { 
             font-family: 'Courier New', Courier, monospace; 
@@ -20,98 +20,76 @@
             max-width: 950px; 
             margin: 0 auto; 
             display: grid;
-            grid-template-columns: 2fr 1fr; /* Panel de juego y Cuaderno */
+            grid-template-columns: 2fr 1fr;
             gap: 20px;
         }
         
-        /* Estilos del Panel de Juego */
         h1 { color: #55ff55; text-shadow: 2px 2px #000; margin-top: 0; }
         .seccion-interaccion {
-            background: #2d2d2d;
-            padding: 15px;
-            border-radius: 10px;
-            border: 2px solid #1a1a1a;
+            background: #2d2d2d; padding: 15px;
+            border-radius: 10px; border: 2px solid #1a1a1a;
             margin-bottom: 20px;
         }
         #dialogo-personaje {
-            font-size: 1.2em;
+            font-size: 1.1em;
             color: #55ffff;
-            min-height: 1.4em;
-            margin: 10px 0;
+            min-height: 1.6em;
+            margin: 15px 0;
             font-weight: bold;
-        }
-        
-        /* Estilos del Cuaderno de Detective (Tachado Visual) */
-        #cuaderno {
-            background: #fdfdfd;
-            color: #000;
-            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
             border-radius: 5px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-            text-align: left;
         }
-        #cuaderno h2 { color: #000; border-bottom: 2px solid #ccc; margin-top: 0; text-align: center;}
-        .grid-cuaderno {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 5px;
-            margin-bottom: 15px;
-        }
-        .entry-cuaderno {
-            background: #eee;
-            padding: 5px;
-            cursor: pointer;
-            border-radius: 3px;
-            user-select: none;
-        }
-        .entry-cuaderno:hover { background: #ddd; }
         
-        /* Clase para tachar visualmente en el cuaderno */
-        .tachado-check {
-            text-decoration: line-through;
-            color: #ff5555;
-            background: #ffcccc;
-        }
-
-        /* Botones de Sospechosos Clickables */
         .btn-sospechoso {
-            background: #333;
-            border: 2px solid #555;
-            padding: 5px;
-            margin: 5px;
-            cursor: pointer;
-            transition: 0.2s;
-            border-radius: 5px;
-            display: inline-block;
+            background: #333; border: 2px solid #555;
+            padding: 5px; margin: 5px;
+            cursor: pointer; transition: 0.2s;
+            border-radius: 5px; display: inline-block;
         }
         .btn-sospechoso:hover { border-color: #55ffff; background: #444; }
         .btn-sospechoso img {
             width: 60px; height: 60px;
-            object-fit: contain;
-            background: #555;
-            border-radius: 3px;
+            object-fit: contain; background: #555; border-radius: 3px;
         }
 
-        /* Área de Acusación */
         #acusacion-area {
-            background: #1a1a1a;
-            padding: 15px;
-            border-radius: 10px;
-            border: 2px dashed #ffaa00;
+            background: #1a1a1a; padding: 15px;
+            border-radius: 10px; border: 2px dashed #ffaa00;
             margin-top: 20px;
         }
         select { padding: 8px; margin: 5px; background: #333; color: #fff; border: 1px solid #555; font-family: inherit;}
         button#btn-acusar { padding: 10px 20px; background: #55ff55; color: #000; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;}
         button#btn-acusar:hover { background: #33cc33; }
-        #resultado-historia { margin-top: 15px; color: #ffff55; line-height: 1.4; text-align: left; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px; display: none;}
+        #resultado-historia { margin-top: 15px; color: #ffff55; line-height: 1.4; text-align: left; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 5px; display: none; border: 2px solid;}
+
+        #cuaderno {
+            background: #fdfdfd; color: #000;
+            padding: 15px; border-radius: 5px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            text-align: left;
+        }
+        #cuaderno h2 { color: #000; border-bottom: 2px solid #ccc; margin-top: 0; text-align: center;}
+        .grid-cuaderno { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; margin-bottom: 15px; }
+        .entry-cuaderno {
+            background: #eee; padding: 5px;
+            cursor: pointer; border-radius: 3px;
+            user-select: none; border: 1px solid #ccc;
+            font-size: 0.9em;
+        }
+        .entry-cuaderno:hover { background: #ddd; }
+        .tachado-check {
+            text-decoration: line-through;
+            color: #ff5555; background: #ffcccc; border-color: #ffaaaa;
+        }
     </style>
 </head>
 <body>
 
     <div id="game-container">
         <div id="panel-principal">
-            <h1>CLUE MINECRAFT</h1>
-            <p>Alguien eliminó al pollo mascota. Dale clic a un sospechoso para interrogarlo.</p>
+            <h1>MISTERIO EN EL SERVER</h1>
+            <p>Alguien eliminó al pollo mascota. Interroga a los sospechosos para descubrir quién no tiene coartada y qué elementos no se usaron.</p>
 
             <div class="seccion-interaccion">
                 <div id="contenedor-sospechosos"></div>
@@ -131,63 +109,60 @@
 
         <div id="cuaderno">
             <h2>Mi Libreta</h2>
-            <p style="font-size:0.8em; margin-top:0; text-align:center;">Tacha lo que descubras que es INOCENTE.</p>
+            <p style="font-size:0.85em; margin-top:0; text-align:center;">Tacha lo que esté USADO u OCUPADO en una coartada.</p>
             
-            <h3>Sospechosos</h3>
+            <h3>Sospechosos (Inocentes)</h3>
             <div class="grid-cuaderno" id="note-personajes"></div>
             
-            <h3>Armas</h3>
+            <h3>Armas (Usadas)</h3>
             <div class="grid-cuaderno" id="note-armas"></div>
             
-            <h3>Locaciones</h3>
+            <h3>Locaciones (Ocupadas)</h3>
             <div class="grid-cuaderno" id="note-locaciones"></div>
         </div>
     </div>
 
     <script>
-        // 1. Datos
         const personajes = ["Steve", "Herobrine", "Alex", "Zombie", "Esqueleto"];
         const armas = ["Pico", "Espada", "Hacha", "Arco", "Pala"];
         const locaciones = ["Mina", "Nether", "Templo", "Aldea", "Portal"];
 
-        // 2. Motor de Reparto de Pistas (Lógica Clue)
         let secreto = {};
-        let pistasDePersonajes = { "Steve": [], "Herobrine": [], "Alex": [], "Zombie": [], "Esqueleto": [] };
+        let coartadas = {}; 
 
-        function inicializarPartida() {
-            // ELEGIR SECRETO
+        function inicializarPuzle() {
             secreto.personaje = personajes[Math.floor(Math.random() * personajes.length)];
             secreto.arma = armas[Math.floor(Math.random() * armas.length)];
             secreto.locacion = locaciones[Math.floor(Math.random() * locaciones.length)];
 
-            // Imprimir trampa en consola
-            console.log("SECRETO GENERADO (Profe, no vea):", secreto);
+            console.log("SECRETO GENERADO:", secreto);
 
-            // CREAR MAZO INOCENTE (Todas las cartas menos el secreto)
-            let mazoInocente = [];
-            
-            personajes.forEach(p => { if(p !== secreto.personaje) mazoInocente.push({tipo: "Sospechoso", nombre: p}) });
-            armas.forEach(a => { if(a !== secreto.arma) mazoInocente.push({tipo: "Arma", nombre: a}) });
-            locaciones.forEach(l => { if(l !== secreto.locacion) mazoInocente.push({tipo: "Lugar", nombre: l}) });
+            let inocentesArr = personajes.filter(p => p !== secreto.personaje);
+            let armasInocentesArr = armas.filter(a => a !== secreto.arma);
+            let lugaresInocentesArr = locaciones.filter(l => l !== secreto.locacion);
 
-            // MEZCLAR MAZO (Algoritmo Fisher-Yates)
-            for (let i = mazoInocente.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [mazoInocente[i], mazoInocente[j]] = [mazoInocente[j], mazoInocente[i]];
-            }
+            mezclarArray(armasInocentesArr);
+            mezclarArray(lugaresInocentesArr);
 
-            // REPARTIR CARTAS A LOS PERSONAJES (Incluso al asesino, Clue es así)
-            let idxPersonaje = 0;
-            while(mazoInocente.length > 0) {
-                let carta = mazoInocente.pop();
-                let dueñoDePista = personajes[idxPersonaje];
-                pistasDePersonajes[dueñoDePista].push(carta);
-                
-                idxPersonaje = (idxPersonaje + 1) % personajes.length; // Ciclar entre personajes
+            coartadas[secreto.personaje] = { asesino: true };
+
+            for (let i = 0; i < inocentesArr.length; i++) {
+                let pInocente = inocentesArr[i];
+                coartadas[pInocente] = {
+                    asesino: false,
+                    arma: armasInocentesArr[i],
+                    lugar: lugaresInocentesArr[i]
+                };
             }
         }
 
-        // 3. Las 5 Historias Dinámicas (Se usan para el final)
+        function mezclarArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
         const historiasBase = {
             "Steve": "Quería construir una granja automática y el pollo se cruzó. Lo eliminó usando el [ARMA] en la zona de [LOCACION]. Fue un accidente técnico.",
             "Herobrine": "Fue un acto de pura maldad. Apareció en [LOCACION] y eliminó al pollo con un golpe crítico de su [ARMA], dejando solo una pluma flotando.",
@@ -196,42 +171,35 @@
             "Esqueleto": "Estaba practicando su puntería nocturna en [LOCACION]. El pollo dio un salto repentino justo en la trayectoria letal del [ARMA]."
         };
 
-        // 4. Interfaz y Renderizado
         function setupInterfaz() {
-            inicializarPartida();
+            inicializarPuzle();
 
             const contenedorSos = document.getElementById('contenedor-sospechosos');
             const dialogo = document.getElementById('dialogo-personaje');
 
-            // Crear botones de sospechosos para interrogar
             personajes.forEach(p => {
                 let imgName = p.toLowerCase() + ".png";
                 const btn = document.createElement('div');
                 btn.className = 'btn-sospechoso';
                 btn.innerHTML = `<img src="img/${imgName}" alt="${p}"><br><b>${p}</b>`;
                 
-                // FUNCIÓN DE INTERROGATORIO
                 btn.onclick = function() {
-                    let pistasDisponibles = pistasDePersonajes[p];
-                    if(pistasDisponibles.length > 0) {
-                        // El personaje revela una pista aleatoria de su "mano"
-                        let idxPista = Math.floor(Math.random() * pistasDisponibles.length);
-                        let pistaRevelada = pistasDisponibles[idxPista];
-                        
-                        dialogo.innerHTML = `&quot;Sé que el <b>${pistaRevelada.tipo} ${pistaRevelada.nombre}</b> es INOCENTE... lo vi en otro lado.&quot;`;
+                    let miCoartada = coartadas[p];
+                    if(miCoartada.asesino) {
+                        dialogo.innerHTML = `&quot;Ehm... no recuerdo qué estaba haciendo. Estaba... oscuro.&quot;`;
+                        dialogo.style.color = "#ff5555"; 
                     } else {
-                        dialogo.innerHTML = `&quot;No sé nada más sobre el Pollo, de verdad.&quot;`;
+                        dialogo.innerHTML = `&quot;Yo estaba en la <b>${miCoartada.lugar}</b> con mi <b>${miCoartada.arma}</b>.&quot;`;
+                        dialogo.style.color = "#55ffff"; 
                     }
                 };
                 contenedorSos.appendChild(btn);
             });
 
-            // Llenar Selects de Acusación
             llenarSelect('sel-personaje', personajes);
             llenarSelect('sel-arma', armas);
             llenarSelect('sel-locacion', locaciones);
 
-            // Crear Cuaderno Tachado Manual
             crearEntradasCuaderno('note-personajes', personajes);
             crearEntradasCuaderno('note-armas', armas);
             crearEntradasCuaderno('note-locaciones', locaciones);
@@ -252,25 +220,26 @@
                 const div = document.createElement('div');
                 div.className = 'entry-cuaderno';
                 div.innerText = item;
-                // Función tachar manual al clic
                 div.onclick = function() { this.classList.toggle('tachado-check'); };
                 contenedor.appendChild(div);
             });
         }
 
-        // 5. Lógica de Acusación
+        function ocultarMensajeError() {
+            document.getElementById('resultado-historia').style.display = 'none';
+        }
+
         function verificarAcusacion() {
             let pElegido = document.getElementById('sel-personaje').value;
             let aElegido = document.getElementById('sel-arma').value;
             let lElegida = document.getElementById('sel-locacion').value;
             let divHistoria = document.getElementById('resultado-historia');
 
-            // Ocultar cuaderno para mostrar final
-            document.getElementById('cuaderno').style.display = 'none';
-            document.getElementById('acusacion-area').style.display = 'none';
-
             if (pElegido === secreto.personaje && aElegido === secreto.arma && lElegida === secreto.locacion) {
-                // GENERAR HISTORIA DINÁMICA FINAL
+                // Si la acusación es correcta, ocultamos el cuaderno y controles
+                document.getElementById('cuaderno').style.display = 'none';
+                document.getElementById('acusacion-area').style.display = 'none';
+
                 let historiaFinal = historiasBase[pElegido]
                                     .replace("[ARMA]", aElegido)
                                     .replace("[LOCACION]", lElegida);
@@ -278,22 +247,23 @@
                 divHistoria.innerHTML = `<h3>¡MISTERIO RESUELTO!</h3>
                                         <p>Asesino: <b>${pElegido}</b> | Arma: <b>${aElegido}</b> | Lugar: <b>${lElegida}</b></p>
                                         <p><i>&quot;${historiaFinal}&quot;</i></p>
-                                        <button onclick="location.reload()" style="background:#fff; color:#000; border:none; padding:5px; border-radius:3px; cursor:pointer;">Jugar de Nuevo</button>`;
+                                        <button onclick="location.reload()" style="background:#fff; color:#000; border:none; padding:10px; font-weight:bold; border-radius:3px; cursor:pointer; margin-top:10px;">Jugar de Nuevo</button>`;
                 divHistoria.style.display = 'block';
                 divHistoria.style.borderColor = "#55ff55";
+                divHistoria.style.color = "#ffff55";
 
             } else {
+                // Si falla, mostramos el error sin ocultar nada más
                 divHistoria.innerHTML = `<h3>¡ACUSACIÓN FALLIDA!</h3>
-                                        <p>Esa no es la verdad. El asesino sigue suelto en el servidor.</p>
-                                        <p>Secreto Real: Asesino: <b>${secreto.personaje}</b>, Arma: <b>${secreto.arma}</b>, Lugar: <b>${secreto.locacion}</b>.</p>
-                                        <button onclick="location.reload()" style="background:#fff; color:#000; border:none; padding:5px; border-radius:3px; cursor:pointer;">Reintentar</button>`;
+                                        <p>Has acusado a <b>${pElegido}</b> en el/la <b>${lElegida}</b> con el/la <b>${aElegido}</b>, pero esa no es la verdad.</p>
+                                        <p>Aún hay cabos sueltos. ¡Sigue investigando!</p>
+                                        <button onclick="ocultarMensajeError()" style="background:#fff; color:#000; border:none; padding:10px; font-weight:bold; border-radius:3px; cursor:pointer; margin-top:10px;">Continuar Investigando</button>`;
                 divHistoria.style.display = 'block';
                 divHistoria.style.borderColor = "#ff5555";
                 divHistoria.style.color = "#ffcccc";
             }
         }
 
-        // Arrancar
         setupInterfaz();
     </script>
 </body>
